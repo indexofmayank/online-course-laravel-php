@@ -7,10 +7,10 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\AboutController;
 
 
-
-Route::get('/', [HomeController::class, 'index']);
+Route::get('/', [HomeController::class, 'index'])->name('home.index');
 Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('login', [LoginController::class, 'login'])->name('home');
 Route::get('/categories', [CategoryController::class, 'index']);
@@ -22,6 +22,10 @@ Route::post('/student/store', [StudentController::class, 'store'])->name('studen
 Route::get('/studenttest', [StudentController::class, 'test']);
 Route::put('/studentupdate/{id}', [StudentController::class, 'update'])->name('students.update');
 Route::delete('/students/{id}', [StudentController::class, 'destroy'])->name('students.destroy');
+Route::get('/about', [AboutController::class, 'index']);
+Route::get('/contact', function () {
+    return view('pages/Contact');
+});
 
 Route::get('register', [RegisterController::class, 'showRegisterForm'])->name('register');
 Route::post('register', [RegisterController::class, 'registerUser']);

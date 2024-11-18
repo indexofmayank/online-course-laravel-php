@@ -40,9 +40,7 @@ class LoginController extends Controller
         }
     
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-            $categories = Category::get();
-            $courses = Courses::get();
-            return view('pages/Homepage', compact('categories', 'courses'));
+            return redirect()->route('home.index');
         }
     
         return back()->withErrors([
