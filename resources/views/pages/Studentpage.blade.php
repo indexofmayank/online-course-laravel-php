@@ -5,7 +5,11 @@
     <button type="button" class="btn btn-info mt-3" data-bs-toggle="modal" data-bs-target="#AddStaticBackdrop">
         <i class="bi bi-person-fill-add"> Add student</i>
     </button>
-    
+    <!-- Search Form -->
+    <form method="GET" action="{{ route('student.index') }}" class="mb-3 mt-3">
+        <input type="text" name="search" class="form-control" placeholder="Search by name or class..." value="{{ request()->input('search') }}" />
+    </form>
+
     <h2 class="my-4"><b><u>Students Table</u></b></h2>
     <div class="table-responsive">
         <table class="table table-bordered table-striped">
@@ -40,7 +44,15 @@
                                 data-fees="{{ $student->yearly_fees }}">
                                 <i class="bi bi-pencil-square"></i>
                             </button>
-                        </td>
+                            <!-- Soft Delete Action -->
+                            <form action="{{ route('students.destroy', $student->id) }}" method="POST" style="display:inline;">
+                                 @csrf
+                                @method('DELETE')
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this student?')">
+                                <i class="bi bi-archive-fill"></i> Delete
+                            </button>
+                    </form>                        
+                    </td>
                     </tr>
                 @endforeach
             </tbody>
@@ -121,67 +133,72 @@
             <div class="modal-header">
                 <div class="modal-title fs-5" id="editStudentModal">Edit Student</div>
             </div>
-            <form id="editStudentForm" action="{{url('/studentupdate/' . $student->id) }}"  method="POST" >
-                @csrf
-                @method('PUT')
-                <input type='hidden' id="edit_student_id" name="student_id">
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="student_name" class="form-label">Student Name</label>
-                        <input type="text" class="form-control" id="edit_student_name" name="student_name" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="class_teacher_id" class="form-label">Class Teacher</label>
-                        <select class="form-select" id="edit_class_teacher_id" name="class_teacher_id" required>
-                            @foreach ($teachers as $teacher)
-                                <option value="{{ $teacher->id }}">{{ $teacher->teacher_name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="class" class="form-label">Class</label>
-                        <select class="form-select" id="edit_class" name="class" required>
-                            @for($i = 1; $i <= 12; $i++)
-                                <option value="{{$i}}">Class {{$i}}</option>
-                            @endfor
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="addmission_date" class="form-label">Admission Date</label>
-                        <input type="date" class="form-control" id="edit_addmission_date" name="addmission_date" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="yearly_fees" class="form-label">Yearly Fees</label>
-                        <input type="number" class="form-control" id="edit_yearly_fees" name="yearly_fees" required>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" id="submitEditFrom">Submit</button>
-                </div>
-            </form>
+            <form id="editStudentForm" method="POST">
+    @csrf
+    @method('PUT')
+    <input type='hidden' id="edit_student_id" name="student_id">
+    <div class="modal-body">
+        <div class="mb-3">
+            <label for="student_name" class="form-label">Student Name</label>
+            <input type="text" class="form-control" id="edit_student_name" name="student_name" required>
+        </div>
+        <div class="mb-3">
+            <label for="class_teacher_id" class="form-label">Class Teacher</label>
+            <select class="form-select" id="edit_class_teacher_id" name="class_teacher_id" required>
+                @foreach ($teachers as $teacher)
+                    <option value="{{ $teacher->id }}">{{ $teacher->teacher_name }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="class" class="form-label">Class</label>
+            <select class="form-select" id="edit_class" name="class" required>
+                @for($i = 1; $i <= 12; $i++)
+                    <option value="{{$i}}">Class {{$i}}</option>
+                @endfor
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="addmission_date" class="form-label">Admission Date</label>
+            <input type="date" class="form-control" id="edit_addmission_date" name="addmission_date" required>
+        </div>
+        <div class="mb-3">
+            <label for="yearly_fees" class="form-label">Yearly Fees</label>
+            <input type="number" class="form-control" id="edit_yearly_fees" name="yearly_fees" required>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary" id="submitEditForm">Submit</button>
+    </div>
+</form>
         </div>
     </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $('#editStudentModal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget); // Button that triggered the modal
-        var studentId = button.data('id');
-        var studentName = button.data('name');
-        var teacherId = button.data('teacher');
-        var studentClass = button.data('class');
-        var admissionDate = button.data('date');
-        var fees = button.data('fees');
+$('#editStudentModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget); // Button that triggered the modal
+    var studentId = button.data('id');
+    var studentName = button.data('name');
+    var teacherId = button.data('teacher');
+    var studentClass = button.data('class');
+    var admissionDate = button.data('date');
+    var fees = button.data('fees');
 
-        $('#edit_student_name').val(studentName);
-        $('#edit_class_teacher_id').val(teacherId);
-        $('#edit_class').val(studentClass);
-        $('#edit_addmission_date').val(admissionDate);
-        $('#edit_yearly_fees').val(fees);
-        $('#edit_student_id').val(studentId);
-    });
+    // Update form action dynamically
+    var formAction = '/studentupdate/' + studentId;
+    $('#editStudentForm').attr('action', formAction);
+
+    // Populate the modal fields
+    $('#edit_student_name').val(studentName);
+    $('#edit_class_teacher_id').val(teacherId);
+    $('#edit_class').val(studentClass);
+    $('#edit_addmission_date').val(admissionDate);
+    $('#edit_yearly_fees').val(fees);
+    $('#edit_student_id').val(studentId);
+});
 </script>
 
 @endsection

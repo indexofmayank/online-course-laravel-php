@@ -21,6 +21,7 @@ Route::get('/courses/{categoryId}', [CourseController::class, 'getCourseForCateg
 Route::post('/student/store', [StudentController::class, 'store'])->name('students.store');
 Route::get('/studenttest', [StudentController::class, 'test']);
 Route::put('/studentupdate/{id}', [StudentController::class, 'update'])->name('students.update');
+Route::delete('/students/{id}', [StudentController::class, 'destroy'])->name('students.destroy');
 
 Route::get('register', [RegisterController::class, 'showRegisterForm'])->name('register');
 Route::post('register', [RegisterController::class, 'registerUser']);

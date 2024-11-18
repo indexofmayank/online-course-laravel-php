@@ -13,7 +13,6 @@ class Courses extends Model
                             'image', 
                             'description', 
                             'category_id', 
-                            'image',
                             'price', 
                             'teacher_id'
                         ];
